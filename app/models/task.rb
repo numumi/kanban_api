@@ -4,4 +4,7 @@ class Task
 
   field :name, type: String
   field :description, type: String
+  field :position, type: Integer
+
+  embedded_in :column
 end

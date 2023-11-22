@@ -7,5 +7,11 @@ Rails.application.routes.draw do
       put :move
     end
   end
+
+  resources :tasks, only: [:create, :show, :update, :destroy] do
+    member do
+      put :move
+    end
+  end
 end
 

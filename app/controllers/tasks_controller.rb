@@ -1,11 +1,13 @@
 class TasksController < ApplicationController
   def show
-    task = Task.find(params[:id])
+    column = Column.find(params[:column_id])
+    task = column.tasks.find(params[:id])
     render json: task
   end
 
   def update
-    task = Task.find(params[:id])
+    column = Column.find(params[:column_id])
+    task = column.tasks.find(params[:id])
     if task.update(name: params[:name], description: params[:description])
       render json: { message: "タスクが更新されました" }
     else
@@ -19,7 +21,8 @@ class TasksController < ApplicationController
   end
 
   def destroy
-    task = Task.find(params[:id])
+    column = Column.find(params[:column_id])
+    task = column.tasks.where(params[:id])
     if task.destroy_and_reorder
       render json: { message: "タスクが削除されました" }
     else

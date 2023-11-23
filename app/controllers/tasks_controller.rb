@@ -1,7 +1,7 @@
 class TasksController < ApplicationController
   def show
-    column = Column.find(params[:column_id])
-    task = column.tasks.find(params[:id])
+    column = Column.where(id: params[:column_id]).first
+    task = column.tasks.where(id: params[:id]).first
     render json: task
   end
 

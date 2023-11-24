@@ -3,7 +3,7 @@ class ColumnsController < ApplicationController
     column = Column.new(column_params)
     column.position = Column.where(board_id: column_params[:board_id]).count
     if column.save
-      render json: { message: "カラムが作成されました" }
+      render json:  {id: column.id.to_s, message: "カラムが作成されました" }
     else
       render json: column.errors.full_messages, status: :unprocessable_entity
     end

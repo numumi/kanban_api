@@ -154,9 +154,7 @@ boards.each do |board|
 
   board[:columns].each_with_index do |column, index|
     created_column = Column.create(name: column[:name], position: index, board_id: created_board.id)
-    puts column[:tasks]
     column[:tasks].each_with_index do |task, index|
-      puts 1111111111111111
       created_column.tasks.create(name: task[:name], description: task[:description], position: index)
     end
   end

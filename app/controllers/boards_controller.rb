@@ -21,6 +21,7 @@ class BoardsController < ApplicationController
         {
           id: column.id.to_s,
           name: column.name,
+          board_id: column.board_id,
           tasks: column.tasks.asc(:position).map do |task|
             {
               id: task.id.to_s,

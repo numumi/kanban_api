@@ -14,12 +14,11 @@ class Column
   end
 
   def destroy_and_reorder
-    board = self.board
-    ActiveRecord::Base.transaction do
-      self.destroy!
-      board.columns.order(:position).each_with_index do |column, index|
-        column.update!(position: index)
-      end
+    # スタンドアローンモードではトランザクションがサポートされていないため、
+    # 手動でのロールバックを行う必要がある
+    self.destroy!
+    Column.where(board_id: self.board_id).asc(:position).each_with_index do |column, index|
+      column.update!(position: index)
     end
   end
 

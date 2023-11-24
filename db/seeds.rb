@@ -147,7 +147,7 @@ boards = [
     ]
   }
 ]
-
+p "Create Boards"
 boards.each do |board|
   created_board = Board.create(name: board[:name])
   created_board.image.attach(io: File.open(Rails.root.join(board[:image_path])), filename: File.basename(board[:image_path]), content_type: 'image/jpg')
@@ -159,3 +159,4 @@ boards.each do |board|
     end
   end
 end
+p "Create Boards Done"

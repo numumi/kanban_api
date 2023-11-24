@@ -1,24 +1,17 @@
-# README
+## 概要
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+- Next.js 学習で作成したカンバンボードの api
+- Ruby on Rails7
+- 学習のため column と task を MongoDB、board を MySQL で作成
 
-Things you may want to cover:
+### 課題
 
-* Ruby version
+- 本番環境へ未デプロイ
+- クライアントと WebSocket 通信
+- テスト
+- Rubocop 未設定
+- Mongoid のトランザクション（スタンドアローンモードではトランザクション不可なため）
+- lock_versionを使った楽観ロック
+- ユーザー認証、認可
 
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+<!-- ### URL -->

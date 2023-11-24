@@ -8,6 +8,8 @@ class Task
 
   embedded_in :column
 
+  validates :name, :position, presence: true
+
   def destroy_and_reorder
     column = self.column
     ActiveRecord::Base.transaction do

@@ -1,4 +1,15 @@
 class TasksController < ApplicationController
+  def create
+    column = Column.find(params[:column_id])
+    task = column.tasks.new(task_params)
+    task.position = column.tasks.count
+    if task.save
+      render json: { id: task.id.to_s, message: "タスクが作成されました" }
+    else
+      render json: task.errors.full_messages, status: :unprocessable_entity
+    end
+  end
+  
   def show
     column = Column.where(id: params[:column_id]).first
     task = column.tasks.where(id: params[:id]).first

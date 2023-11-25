@@ -11,12 +11,11 @@ class Task
   validates :name, :position, presence: true
 
   def destroy_and_reorder
-    column = self.column
-    ActiveRecord::Base.transaction do
-      self.destroy!
-      column.tasks.order(:position).each_with_index do |task, index|
-        task.update!(position: index)
-      end
+    # スタンドアローンモードではトランザクションがサポートされていないため、
+    # 手動でのロールバックを行う必要がある  
+    self.destroy!
+    self.column.tasks.asc(:position).each_with_index do |task, index|
+      task.update!(position: index)
     end
   end
 

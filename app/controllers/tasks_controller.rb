@@ -11,7 +11,7 @@ class TasksController < ApplicationController
   end
   
   def show
-    column = Column.where(id: params[:column_id]).first
+    column = Column.find(params[:column_id])
     task = column.tasks.where(id: params[:id]).first
     render json: task
   end
@@ -33,7 +33,7 @@ class TasksController < ApplicationController
 
   def destroy
     column = Column.find(params[:column_id])
-    task = column.tasks.where(params[:id])
+    task = column.tasks.where(id: params[:id]).first
     if task.destroy_and_reorder
       render json: { message: "タスクが削除されました" }
     else

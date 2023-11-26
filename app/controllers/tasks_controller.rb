@@ -13,7 +13,7 @@ class TasksController < ApplicationController
   def show
     column = Column.find(params[:column_id])
     task = column.tasks.where(id: params[:id]).first
-    render json: task
+    render json: task.attributes.tap { |hash| hash["id"] = hash["_id"].to_s }
   end
 
   def update

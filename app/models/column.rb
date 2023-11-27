@@ -22,13 +22,13 @@ class Column
     end
   end
 
-  def reorder_positions(column_ids)
-    ActiveRecord::Base.transaction do
-      column_ids.each_with_index do |id, index|
-        column = self.find(id)
-        column.position = index
-        column.save!
-      end
+  def self.reorder_positions(column_ids)
+    # スタンドアローンモードではトランザクションがサポートされていないため、
+    # 手動でのロールバックを行う必要がある
+    column_ids.each_with_index do |id, index|
+      column = self.find(id)
+      column.position = index
+      column.save!
     end
   end
 end

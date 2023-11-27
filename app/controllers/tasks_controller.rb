@@ -27,8 +27,13 @@ class TasksController < ApplicationController
   end
 
   def move
-    Task.reorder_positions(params[:ids])
-    render json: { message: "タスクが移動されました" }
+    task = Column.find(params[:source_column_id]).tasks.where(id: params[:id]).first
+    new_task = task.reorder_positions( params[:position], params[:source_column_id], params[:destination_column_id])
+    if new_task != nil
+      render json: { newTaskId: new_task.id.to_s, destinationColumnId: new_task.column&.id.to_s,  message: "タスクが移動されました" }
+    else
+      render json: { message: "タスクが移動されました" }
+    end
   end
 
   def destroy

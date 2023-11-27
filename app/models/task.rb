@@ -10,6 +10,7 @@ class Task
 
   validates :name, :position, presence: true
 
+  # タスクの削除と空いた並び順を整列
   def destroy_and_reorder
     # スタンドアローンモードではトランザクションがサポートされていないため、
     # 手動でのロールバックを行う必要がある  
@@ -19,13 +20,35 @@ class Task
     end
   end
 
-  def reorder_positions(task_ids)
-    ActiveRecord::Base.transaction do
-      task_ids.each_with_index do |id, index|
-        task = self.find(id)
-        task.position = index
+  # タスクの整列
+  def reorder(position, column)
+    # 移動先カラムにタスクがある場合は、そのタスクより後ろのタスクのpositionを+1する
+    # gteはgreater than or equal toの略で、MongoDBの検索条件の一つ
+    column.tasks.where(:id.ne => self.id).asc(:position).each_with_index do |task, index|
+      task.update!(position: index)
+    end
+    column.tasks.where(:position.gte => position).each do |task|
+      if task
+        task.inc(position: 1)
         task.save!
       end
+    end
+  end
+
+  def reorder_positions(position, source_column_id, destination_column_id)
+    # スタンドアローンモードではトランザクションがサポートされていないため、
+    # 手動でのロールバックを行う必要がある
+    column = Column.find(destination_column_id)
+    if source_column_id == destination_column_id
+      self.reorder(position, column)
+      self.update(position: position)
+      return nil
+    else
+      self.reorder(position, column)
+      new_task = column.tasks.create!(self.attributes.except("_id", "created_at", "updated_at")
+                                .merge(position: position))
+      self.destroy_and_reorder
+      return new_task
     end
   end
 end

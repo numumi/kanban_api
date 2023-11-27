@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   get "/board/:id", to: "boards#show"
 
   resources :columns, only: [:create, :update, :destroy] do
-    member do
+    collection do
       put :move
     end
   end

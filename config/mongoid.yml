@@ -1,9 +1,6 @@
 development:
-
   clients:
-
     default:
-
       database: mongodb
 
       hosts:
@@ -26,3 +23,9 @@ test:
         read:
           mode: :primary
         max_pool_size: 1
+production:
+  clients:
+    default:
+      uri: <%= Rails.application.credentials.mongoid[:uri] %>
+      options:
+        server_selection_timeout: 5

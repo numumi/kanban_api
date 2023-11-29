@@ -1,0 +1,48 @@
+version: "3.8"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: bundle exec puma -C config/puma.rb
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - public-data:/app/public
+      - tmp-data:/app/tmp
+      - log-data:/app/log
+    environment:
+      - RAILS_ENV=production
+    stdin_open: true
+    tty: true
+
+      # - db
+      # - mongodb
+
+  # db:
+  #   image: mysql:8.0
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: password
+  #   volumes:
+  #     - mysql_data:/var/lib/mysql
+  #   command: --default-authentication-plugin=mysql_native_password
+  #   ports:
+  #     - "3306:3306"
+  # だめだったらこれをEC2で立てる
+  # mongodb:
+  #   image: mongo
+  #   restart: always
+  #   environment:
+  #     MONGO_INITDB_ROOT_USERNAME: root
+  #     MONGO_INITDB_ROOT_PASSWORD: root
+  #   volumes:
+  #     - mongodb-data:/data/db
+  #   ports:
+  #     - "27017:27017"
+volumes:
+
+  public-data:
+  log-data:
+  tmp-data:

@@ -50,6 +50,8 @@ test:
 #
 production:
   <<: *default
-  database: kanban_production
-  username: app
-  password: <%= ENV["APP_DATABASE_PASSWORD"] %>
+  database: <%=  Rails.application.credentials.rds[:database] %>
+  username: <%=  Rails.application.credentials.rds[:username] %>
+  password: <%=  Rails.application.credentials.rds[:password] %>
+  host: <%=  Rails.application.credentials.rds[:host] %>
+  port: <%=  Rails.application.credentials.rds[:port] %>

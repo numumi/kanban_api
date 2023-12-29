@@ -1,12 +1,5 @@
-class Task
-  include Mongoid::Document
-  include Mongoid::Timestamps
-
-  field :name, type: String
-  field :description, type: String
-  field :position, type: Integer
-
-  embedded_in :column
+class Task < ApplicationRecord
+  belongs_to :column
 
   validates :name, :position, presence: true
 

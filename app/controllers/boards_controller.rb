@@ -19,12 +19,12 @@ class BoardsController < ApplicationController
       image: @board.image.attached? ? rails_blob_url(@board.image) : nil,
       columns: @board.columns.asc(:position).map do |column|
         {
-          id: column.id.to_s,
+          id: column.id,
           name: column.name,
-          board_id: column.board_id,
+          board_id: column.board.id,
           tasks: column.tasks.asc(:position).map do |task|
             {
-              id: task.id.to_s,
+              id: task.id,
               name: task.name,
               description: task.description
             }

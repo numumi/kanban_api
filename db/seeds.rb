@@ -1,4 +1,3 @@
-Column.destroy_all
 boards = [
   {
     image_path: "public/images/wood-texture_00003.jpg",

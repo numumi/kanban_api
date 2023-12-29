@@ -1,17 +1,8 @@
-class Column
-  include Mongoid::Document
-  include Mongoid::Timestamps
-  embeds_many :tasks
-
-  field :name, type: String
-  field :position, type: Integer
-  field :board_id, type: Integer
+class Column < ApplicationRecord
+  belongs_to :board
+  has_many :tasks, dependent: :destroy
 
   validates :name, :board_id, :position, presence: true
-
-  def board
-    Board.find(board_id)
-  end
 
   def destroy_and_reorder
     # スタンドアローンモードではトランザクションがサポートされていないため、

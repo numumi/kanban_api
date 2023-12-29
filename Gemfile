@@ -47,5 +47,4 @@ group :development do
   # gem "spring"
 end
 
-gem "mongoid"
 gem 'aws-sdk-s3', require: false

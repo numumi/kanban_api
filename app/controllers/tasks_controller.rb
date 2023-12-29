@@ -1,23 +1,23 @@
 class TasksController < ApplicationController
-  def create
-    task = Task.new(task_params)
-    task.position = column.tasks.count
-    if task.save
-      render json: { id: task.id, message: "タスクが作成されました" }
-    else
-      render json: task.errors.full_messages, status: :unprocessable_entity
-    end
-  end
-  
   def show
     task = Task.find(params[:id])
     render json: task
   end
+  def create
+    task = Task.new(task_params)
+    task.position = column.tasks.count
+    if task.save
+      render json: { id: task.id, message: 'タスクが作成されました' }
+    else
+      render json: task.errors.full_messages, status: :unprocessable_entity
+    end
+  end
+
 
   def update
     task = Task.find(params[:id])
     if task.update(name: params[:name], description: params[:description])
-      render json: { message: "タスクが更新されました" }
+      render json: { message: 'タスクが更新されました' }
     else
       render json: { error: task.errors.full_messages }, status: :unprocessable_entity
     end
@@ -25,18 +25,18 @@ class TasksController < ApplicationController
 
   def move
     task = Task.find(params[:id])
-    new_task = task.reorder_positions( params[:position], params[:source_column_id], params[:destination_column_id])
-    if new_task != nil
-      render json: { newTaskId: new_task.id.to_s, destinationColumnId: new_task.column&.id.to_s,  message: "タスクが移動されました" }
+    new_task = task.reorder_positions(params[:position], params[:source_column_id], params[:destination_column_id])
+    if new_task.nil?
+      render json: { message: 'タスクが移動されました' }
     else
-      render json: { message: "タスクが移動されました" }
+      render json: { newTaskId: new_task.id.to_s, destinationColumnId: new_task.column&.id.to_s,  message: 'タスクが移動されました' }
     end
   end
 
   def destroy
     task = Task.find(params[:id])
     if task.destroy_and_reorder
-      render json: { message: "タスクが削除されました" }
+      render json: { message: 'タスクが削除されました' }
     else
       render json: task.errors.full_messages, status: :unprocessable_entity
     end

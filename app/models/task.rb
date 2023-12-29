@@ -6,9 +6,9 @@ class Task < ApplicationRecord
   # タスクの削除と空いた並び順を整列
   def destroy_and_reorder
     # スタンドアローンモードではトランザクションがサポートされていないため、
-    # 手動でのロールバックを行う必要がある  
-    self.destroy!
-    self.column.tasks.asc(:position).each_with_index do |task, index|
+    # 手動でのロールバックを行う必要がある
+    destroy!
+    column.tasks.asc(:position).each_with_index do |task, index|
       task.update!(position: index)
     end
   end
@@ -17,10 +17,10 @@ class Task < ApplicationRecord
   def reorder(position, column)
     # 移動先カラムにタスクがある場合は、そのタスクより後ろのタスクのpositionを+1する
     # gteはgreater than or equal toの略で、MongoDBの検索条件の一つ
-    column.tasks.where(:id.ne => self.id).asc(:position).each_with_index do |task, index|
+    column.tasks.where(:id.ne => id).asc(:position).each_with_index do |task, index|
       task.update!(position: index)
     end
-    column.tasks.where(:position.gte => position).each do |task|
+    column.tasks.where(:position.gte => position).find_each do |task|
       if task
         task.inc(position: 1)
         task.save!
@@ -32,15 +32,14 @@ class Task < ApplicationRecord
     # スタンドアローンモードではトランザクションがサポートされていないため、
     # 手動でのロールバックを行う必要がある
     column = Column.find(destination_column_id)
+    reorder(position, column)
     if source_column_id == destination_column_id
-      self.reorder(position, column)
-      self.update(position: position)
+      update(position:)
       return nil
     else
-      self.reorder(position, column)
-      new_task = column.tasks.create!(self.attributes.except("_id", "created_at", "updated_at")
-                                .merge(position: position))
-      self.destroy_and_reorder
+      new_task = column.tasks.create!(attributes.except('_id', 'created_at', 'updated_at')
+                                .merge(position:))
+      destroy_and_reorder
       return new_task
     end
   end

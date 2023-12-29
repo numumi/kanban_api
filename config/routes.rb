@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
-  root "boards#index"
-  get "/board/:id", to: "boards#show"
+  root 'boards#index'
+  get '/board/:id', to: 'boards#show'
 
   resources :columns, only: [:create, :update, :destroy] do
     collection do
@@ -14,4 +14,3 @@ Rails.application.routes.draw do
     end
   end
 end
-

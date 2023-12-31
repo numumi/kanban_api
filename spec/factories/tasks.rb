@@ -4,6 +4,6 @@ FactoryBot.define do
     description { Faker::Lorem.paragraph(sentence_count: 2) }
     sequence(:position) { |n| n }
     lock_version { 0 }
-    association :column
+    column
   end
 end

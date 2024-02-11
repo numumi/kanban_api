@@ -1,4 +1,4 @@
 class ApplicationController < ActionController::API
-  include ErrorHandler
+  # include ErrorHandler
   include DefaultResponseFormat
 end

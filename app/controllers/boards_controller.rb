@@ -1,4 +1,5 @@
-class BoardsController < ApplicationController
+class BoardsController < SecuredController
+  # skip_before_action :authorize_request, only: [:index]
   def index
     @boards = Board.with_attached_image.all
     boards_with_image_urls = @boards.map do |board|

@@ -25,11 +25,10 @@ class TasksController < ApplicationController
 
   def move
     task = Task.find(params[:id])
-    new_task = task.reorder_positions(params[:position], params[:source_column_id], params[:destination_column_id])
-    if new_task.nil?
+    if task.reorder_positions(params[:position], params[:source_column_id], params[:destination_column_id])
       render json: { message: 'タスクが移動されました' }
     else
-      render json: { newTaskId: new_task.id.to_s, destinationColumnId: new_task.column&.id.to_s,  message: 'タスクが移動されました' }
+      render json: { error: task.errors.full_messages }, status: :unprocessable_entity
     end
   end
 

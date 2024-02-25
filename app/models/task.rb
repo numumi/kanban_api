@@ -5,42 +5,42 @@ class Task < ApplicationRecord
 
   # タスクの削除と空いた並び順を整列
   def destroy_and_reorder
-    # スタンドアローンモードではトランザクションがサポートされていないため、
-    # 手動でのロールバックを行う必要がある
-    destroy!
-    column.tasks.asc(:position).each_with_index do |task, index|
-      task.update!(position: index)
+    ActiveRecord::Base.transaction do
+      destroy!
+      column.tasks.order(:position).each_with_index do |task, index|
+        task.update!(position: index)
+      end
     end
   end
 
   # タスクの整列
-  def reorder(position, column)
-    # 移動先カラムにタスクがある場合は、そのタスクより後ろのタスクのpositionを+1する
-    # gteはgreater than or equal toの略で、MongoDBの検索条件の一つ
-    column.tasks.where(:id.ne => id).asc(:position).each_with_index do |task, index|
-      task.update!(position: index)
+  def reorder(new_position = nil, column)
+    # まず、現在のタスクを除いて、カラム内のタスクのpositionを再設定します
+    column.tasks.where.not(id: id).order(:position).each_with_index do |task, index|
+      task.update!(position: index + 1) 
     end
-    column.tasks.where(:position.gte => position).find_each do |task|
-      if task
-        task.inc(position: 1)
-        task.save!
+  
+    # 指定された位置がある場合、その位置以降のタスクのpositionを1つずつ増やします
+    if new_position
+      # 位置の降順でタスクを取得して、後ろから順に更新
+      column.tasks.where('position <= ?', new_position).order(position: :asc).each do |task|
+        task.update(position: task.position + 1) # positionを増加させて保存します
       end
     end
   end
 
   def reorder_positions(position, source_column_id, destination_column_id)
-    # スタンドアローンモードではトランザクションがサポートされていないため、
-    # 手動でのロールバックを行う必要がある
-    column = Column.find(destination_column_id)
-    reorder(position, column)
-    if source_column_id == destination_column_id
-      update(position:)
-      return nil
-    else
-      new_task = column.tasks.create!(attributes.except('_id', 'created_at', 'updated_at')
-                                .merge(position:))
-      destroy_and_reorder
-      return new_task
+    destination_column = Column.find(destination_column_id)
+
+    ActiveRecord::Base.transaction do
+      reorder(position, destination_column)
+      if source_column_id == destination_column_id
+        update(position: position)
+      else
+        source_column = Column.find(source_column_id)
+        update(column: destination_column, position: position)
+        reorder(nil, source_column)
+      end
     end
   end
 end

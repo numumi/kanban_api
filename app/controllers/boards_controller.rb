@@ -17,10 +17,10 @@ class BoardsController < SecuredController
     board_data = board.as_json(
       include: {
         columns: {
-          only: [:id, :name],
+          only: [:id, :name, :position, :board_id],
           include: {
             tasks: {
-              only: [:id, :name]
+              only: [:id, :name, :position, :column_id]
             }
           }
         },

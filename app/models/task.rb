@@ -24,7 +24,7 @@ class Task < ApplicationRecord
     if new_position
       # 位置の降順でタスクを取得して、後ろから順に更新
       column.tasks.where('position <= ?', new_position).order(position: :asc).each do |task|
-        task.update(position: task.position + 1) # positionを増加させて保存します
+        task.update!(position: task.position + 1) # positionを増加させて保存します
       end
     end
   end
@@ -35,10 +35,10 @@ class Task < ApplicationRecord
     ActiveRecord::Base.transaction do
       reorder(position, destination_column)
       if source_column_id == destination_column_id
-        update(position: position)
+        update!(position: position)
       else
         source_column = Column.find(source_column_id)
-        update(column: destination_column, position: position)
+        update!(column: destination_column, position: position)
         reorder(nil, source_column)
       end
     end

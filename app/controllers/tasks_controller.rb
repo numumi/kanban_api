@@ -3,16 +3,16 @@ class TasksController < ApplicationController
     task = Task.find(params[:id])
     render json: task
   end
+
   def create
     task = Task.new(task_params)
-    task.position = column.tasks.count
+    task.position = task.column.tasks.count
     if task.save
       render json: { id: task.id, message: 'タスクが作成されました' }
     else
       render json: task.errors.full_messages, status: :unprocessable_entity
     end
   end
-
 
   def update
     task = Task.find(params[:id])

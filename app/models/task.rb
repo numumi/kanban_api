@@ -15,16 +15,14 @@ class Task < ApplicationRecord
 
   # タスクの整列
   def reorder(new_position = nil, column)
-    # まず、現在のタスクを除いて、カラム内のタスクのpositionを再設定します
-    column.tasks.where.not(id: id).order(:position).each_with_index do |task, index|
-      task.update!(position: index + 1) 
-    end
-  
-    # 指定された位置がある場合、その位置以降のタスクのpositionを1つずつ増やします
-    if new_position
+    if new_position && new_position <= column.tasks.count
       # 位置の降順でタスクを取得して、後ろから順に更新
-      column.tasks.where('position <= ?', new_position).order(position: :asc).each do |task|
-        task.update!(position: task.position + 1) # positionを増加させて保存します
+      column.tasks.where('position >= ?', new_position).order(:position).each do |task|
+        task.update!(position: task.position + 1)
+      end
+    else
+      column.tasks.order(position: :asc).each do |task|
+        task.update!(position: task.position + 1)
       end
     end
   end

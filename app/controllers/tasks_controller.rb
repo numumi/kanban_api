@@ -6,7 +6,7 @@ class TasksController < ApplicationController
 
   def create
     task = Task.new(task_params)
-    task.position = task.column.tasks.count
+    task.position = Task.where(column_id: task.column_id).map(&:position).max.next
     if task.save
       render json: { id: task.id, message: 'タスクが作成されました' }
     else

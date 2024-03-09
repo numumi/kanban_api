@@ -1,6 +1,6 @@
 class Column < ApplicationRecord
   belongs_to :board
-  has_many :tasks, dependent: :destroy
+  has_many :tasks, -> { order(position: :asc) }, dependent: :destroy
 
   validates :name, :position, presence: true
 

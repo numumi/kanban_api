@@ -1,4 +1,4 @@
-class BoardsController < SecuredController
+class BoardsController < ApplicationController
   skip_before_action :authorize_request
   def index
     @boards = Board.with_attached_image.all
@@ -14,20 +14,7 @@ class BoardsController < SecuredController
 
   def show
     board = Board.includes(columns: :tasks).find(params[:id])
-    board_data = board.as_json(
-      include: {
-        columns: {
-          only: [:id, :name, :position, :board_id],
-          include: {
-            tasks: {
-              only: [:id, :name, :position, :column_id]
-            }
-          }
-        },
-      },
-      only: [:id, :name],
-      
-    ).merge(image: image_url(board.image))
+    board_data =  board.with_details.merge(image: image_url(board.image))
     render json: board_data
   end
 

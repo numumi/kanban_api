@@ -1,4 +1,5 @@
 class Task < ApplicationRecord
+  include Positionable
   belongs_to :column
 
   validates :name, :position, presence: true

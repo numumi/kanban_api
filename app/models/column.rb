@@ -1,4 +1,5 @@
 class Column < ApplicationRecord
+  include Positionable
   belongs_to :board
   has_many :tasks, -> { order(position: :asc) }, dependent: :destroy
 

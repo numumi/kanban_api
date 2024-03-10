@@ -1,7 +1,7 @@
 class ColumnsController < ApplicationController
   def create
     column = Column.new(column_params)
-    column.position = Column.where(board_id: column_params[:board_id]).count
+    column.position = Column.next_position(parent_id: column.board_id, parent_attribute: :board_id)
     if column.save
       render json:  {id: column.id.to_s, message: 'カラムが作成されました' }
     else

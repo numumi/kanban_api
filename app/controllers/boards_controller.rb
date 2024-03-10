@@ -1,5 +1,5 @@
 class BoardsController < ApplicationController
-  skip_before_action :authorize_request
+  
   def index
     @boards = Board.with_attached_image.all
     boards_with_image_urls = @boards.map do |board|

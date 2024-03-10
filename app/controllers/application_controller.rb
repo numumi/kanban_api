@@ -1,7 +1,8 @@
 class ApplicationController < ActionController::API
   # include ErrorHandler
   include DefaultResponseFormat
-  
+  before_action :authorize_request
+
 
   private
 

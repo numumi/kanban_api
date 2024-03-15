@@ -1,5 +1,4 @@
 class BoardsController < ApplicationController
-  
   def index
     @boards = Board.with_attached_image.all
     boards_with_image_urls = @boards.map do |board|

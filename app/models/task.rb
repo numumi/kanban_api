@@ -18,13 +18,9 @@ class Task < ApplicationRecord
   def reorder(new_position = nil, column)
     if new_position && new_position <= column.tasks.count
       # 位置の降順でタスクを取得して、後ろから順に更新
-      column.tasks.where('position >= ?', new_position).where.not(id: id).order(:position).each do |task|
-        task.update!(position: task.position + 1)
-      end
+      column.tasks.where('position >= ?', new_position).where.not(id: id).update_all('position = position + 1')
     else
-      column.tasks.order(position: :asc).each do |task|
-        task.update!(position: task.position + 1)
-      end
+      column.tasks.update_all('position = position + 1')
     end
   end
 

@@ -29,4 +29,8 @@ class JsonWebToken
       end
     ]
   end
+
+  def self.decode(token)
+    JWT.decode(token, nil, false,)
+  end
 end
